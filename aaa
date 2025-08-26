@@ -1,0 +1,185 @@
+
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/oShyyyyy/Plaguecheat.cc-Roblox-Ui-library/main/Source.lua", true))()
+
+library:ChangeWeb("https://discord.gg/WYKUXpQ4sx")
+library:ChangeGame("Praroditel HUB")
+
+local home = library:AddWindow('Home')
+local pisya = library:AddWindow('Combot')
+local watermark = library:AddWatermark('Praroditel hub');
+
+
+local mainhome = home:AddSection('credit / info')
+local AMMOBOX = pisya:AddSection('Gun')
+local troll = pisya:AddSection('Troll')
+local friend = pisya:AddSection('Friend List')
+
+mainhome:AddLabel('The script by Praroditel\n\nPiar manager Hatsu\n')
+
+mainhome:AddKeyBind('Toggle GUI', Enum.KeyCode.Insert, function() 
+    game.CoreGui.PCR_1.Enabled = not game.CoreGui.PCR_1.Enabled
+end)
+
+
+--Combot--
+
+AMMOBOX:AddButton('Gun Moded',function() 
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/VikaUw/hoh/refs/heads/main/lua'))()
+end)
+
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local localPlayer = Players.LocalPlayer
+
+local excludedUserIds = {}
+
+local function updateFriendList()
+    local friendList = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= localPlayer then
+            table.insert(friendList, player.Name)
+        end
+    end
+    return friendList
+end
+
+friend:AddDropdown('Friend List', updateFriendList(), '', function(selected)
+    local selectedPlayer = Players:FindFirstChild(selected)
+    if selectedPlayer then
+        excludedUserIds[selectedPlayer.UserId] = not excludedUserIds[selectedPlayer.UserId] 
+    end
+end)
+friend:AddDropdown('Friend List %2', updateFriendList(), '', function(selected)
+    local selectedPlayer = Players:FindFirstChild(selected)
+    if selectedPlayer then
+        excludedUserIds[selectedPlayer.UserId] = not excludedUserIds[selectedPlayer.UserId] 
+    end
+end)
+friend:AddDropdown('Friend List %3', updateFriendList(), '', function(selected)
+    local selectedPlayer = Players:FindFirstChild(selected)
+    if selectedPlayer then
+        excludedUserIds[selectedPlayer.UserId] = not excludedUserIds[selectedPlayer.UserId] 
+    end
+end)
+friend:AddDropdown('Friend List %4', updateFriendList(), '', function(selected)
+    local selectedPlayer = Players:FindFirstChild(selected)
+    if selectedPlayer then
+        excludedUserIds[selectedPlayer.UserId] = not excludedUserIds[selectedPlayer.UserId] 
+    end
+end)
+friend:AddDropdown('Friend List %5', updateFriendList(), '', function(selected)
+    local selectedPlayer = Players:FindFirstChild(selected)
+    if selectedPlayer then
+        excludedUserIds[selectedPlayer.UserId] = not excludedUserIds[selectedPlayer.UserId] 
+    end
+end)
+
+friend:AddButton('Удалить всех фреендов', function()
+    excludedUserIds = {} 
+    print("Excluded friends list has been reset.")
+end)
+
+friend:AddButton('Обновление игроков', function()
+    Farm2:UpdateDropdown('Friend List', updateFriendList())
+    print("Player list has been updated.")
+end)
+
+local lox
+troll:AddToggle('Explode all players', true, Enum.KeyCode.X, function(state)
+    if state then
+        lox = task.spawn(function()
+            while true do
+                wait(0.1)
+
+                local Hit = ReplicatedStorage:WaitForChild("ACS_Engine")
+                    :WaitForChild("Eventos")
+                    :WaitForChild("Hit")
+
+                for _, ply in ipairs(Players:GetPlayers()) do
+                    if ply == localPlayer then continue end
+
+                    if excludedUserIds[ply.UserId] then continue end
+
+                    local char = ply.Character or ply.CharacterAdded:Wait()
+                    if char then
+                        local head = char:FindFirstChild("Head")
+                        if head then
+                            Hit:FireServer(
+                                head.Position,
+                                head,
+                                head.Position,
+                                Enum.Material.Plastic,
+                                {
+                                    ExPressure = math.huge,
+                                    ExplosiveHit = true,
+                                    ExpRadius = 10,
+                                    DestroyJointRadiusPercent = math.huge,
+                                    ExplosionDamage = math.huge
+                                }
+                            )
+                        end
+                    end
+                end
+            end
+        end)
+    else
+        if lox then 
+            task.cancel(lox) 
+            lox = nil
+        end
+    end
+end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local localPlayer = Players.LocalPlayer
+local lox
+troll:AddToggle('Сдовайся', true, Enum.KeyCode.Z, function(state) 
+    if state then
+        lox = task.spawn(function()
+            while wait(0.1) do
+                for _, Player in Players:GetPlayers() do
+                    if Player == localPlayer or excludedUserIds[Player.UserId] then continue end
+                    ReplicatedStorage.ACS_Engine.Eventos.MedSys.Algemar:FireServer(true, Player.Name, 1)
+                end
+            end
+        end)
+    else
+        if lox then 
+            for _, Player in Players:GetPlayers() do
+                if Player == localPlayer or excludedUserIds[Player.UserId] then continue end
+                ReplicatedStorage.ACS_Engine.Eventos.MedSys.Algemar:FireServer(false, Player.Name, 1)
+            end
+            task.cancel(lox) 
+            lox = nil
+        end
+    end
+end)
+
+local lox
+troll:AddToggle('inf health', true, nil, function(state) 
+    if state then
+        lox = task.spawn(function()
+            while wait(0.1) do
+                game:GetService('ReplicatedStorage')['ACS_Engine'].Eventos.Damage:FireServer(game.Players.LocalPlayer.Character.Humanoid, -math.huge, 0, 0)
+            end
+        end)
+    else
+        if lox then 
+            game:GetService('ReplicatedStorage')['ACS_Engine'].Eventos.Damage:FireServer(game.Players.LocalPlayer.Character.Humanoid, 100, 0, 0)
+            task.cancel(lox) 
+            lox = nil
+        end
+    end
+end)
+
+AMMOBOX:AddButton('1 FPS',function() 
+	while task.wait() do
+
+    for i = 1, 30 do
+        game:GetService('ReplicatedStorage')['ACS_Engine'].Eventos.ServerBullet:FireServer(Vector3.new(0/0/0),Vector3.new(0/0/0))
+    end
+    end
+end)
